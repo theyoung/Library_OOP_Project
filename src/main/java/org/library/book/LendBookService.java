@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LendBookService implements LendBook<BookItem>{
+    private static final Integer PRE_EXPIRE_ALERT_DAYS = 1;
     Map<Account, List<BookItem>> lendStatus;
     Map<Account, List<BookItem>> reserveStatus;
     Map<BookItem, Timer> ExpireAlerts;
@@ -50,7 +51,7 @@ public class LendBookService implements LendBook<BookItem>{
                 }
             };
             LocalDateTime now = LocalDateTime.now();
-            now.plus(BookManagement.MAX_LEND_DAYS, ChronoUnit.DAYS);
+            now.plus(BookManagement.MAX_LEND_DAYS - PRE_EXPIRE_ALERT_DAYS, ChronoUnit.DAYS);
             timer.schedule(task, Timestamp.valueOf(now));
 
             ExpireAlerts.put(bookItem, timer);
