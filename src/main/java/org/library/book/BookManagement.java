@@ -82,6 +82,16 @@ public class BookManagement{
         return lendBook.checkout(rendBook.get(), account);
     }
 
+    public boolean checkout(String barcode, Account account, NotificationCallback callback) throws SecurityException {
+        if(!account.checkAuthorizations(AUTH_TYPE.CHECK_OUT)) {
+            throw new SecurityException(account.getName() + " Account does not have a right to check out a book");
+        }
+        Optional<BookItem> rendBook = bookCollection.searchBookItem(barcode);
+        if(rendBook.isEmpty()) return false;
+
+        return lendBook.checkoutWithNotification(rendBook.get(), account, callback);
+    }
+
     public boolean reserve(String barcode, Account account, NotificationCallback callback) throws SecurityException {
         if(!account.checkAuthorizations(AUTH_TYPE.CHECK_OUT)) {
             throw new SecurityException(account.getName() + " Account does not have a right to check out a book");

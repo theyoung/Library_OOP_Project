@@ -51,7 +51,7 @@ public class BookManagementTest {
 
         BookItem bookItem2 = new BookItem("321", new Book("ISBN_2", new Date(), "Title2", "My 2 Subject", "KOR", new Author("steven","love him")));
 
-        Assertions.assertFalse(management.registerNewBook(bookItem2, member));
+        Assertions.assertThrows(java.lang.SecurityException.class, ()-> management.registerNewBook(bookItem2, member));
     }
 
     @Test
@@ -151,6 +151,28 @@ public class BookManagementTest {
         Assertions.assertNotNull(fine);
 
         fine.process(new CardTransaction(1234567));
+
+        Assertions.assertEquals(BOOK_STATUS.AVAILABLE, bookItem.getStatus());
+    }
+
+
+    @Test
+    public void expireNotificationTest(){
+        BookManagement management = new BookManagement();
+
+        BookItem bookItem = new BookItem("123", new Book("ISBN_1", new Date(), "Title1", "My 1 Subject", "KOR", new Author("steven","love him")));
+        BookItem bookItem2 = new BookItem("321", new Book("ISBN_2", new Date(), "Title2", "My 2 Subject", "KOR", new Author("steven","love him")));
+        BookItem bookItem3 = new BookItem("456", new Book("ISBN_2", new Date(), "Title2", "My 2 Subject", "KOR", new Author("steven","love him")));
+        BookItem bookItem4 = new BookItem("789", new Book("ISBN_3", new Date(), "Title3", "My 3 Subject", "KOR", new Author("superman","love him")));
+
+        Assertions.assertTrue(management.registerNewBook(bookItem, librarian));
+        Assertions.assertTrue(management.registerNewBook(bookItem2, librarian));
+        Assertions.assertTrue(management.registerNewBook(bookItem3, librarian));
+        Assertions.assertTrue(management.registerNewBook(bookItem4, librarian));
+
+        Assertions.assertTrue(management.checkout("123", member, new SMSNotification(member, "Book Lend Expire Approached")));
+
+        Assertions.assertTrue(management.returnBook("123", member));
 
         Assertions.assertEquals(BOOK_STATUS.AVAILABLE, bookItem.getStatus());
     }

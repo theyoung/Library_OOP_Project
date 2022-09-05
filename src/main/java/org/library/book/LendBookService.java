@@ -100,7 +100,13 @@ public class LendBookService implements LendBook<BookItem>{
     }
 
     private void cancelAlert(BookItem bookItem){
-        ExpireAlerts.get(bookItem).cancel();
+        if (ExpireAlerts.get(bookItem) != null) {
+            ExpireAlerts.get(bookItem).cancel();
+            ExpireAlerts.remove(bookItem);
+            System.out.println("Disabled Expire Alert for ");
+            bookItem.printTitle();
+        }
+
     }
 
     @Override
