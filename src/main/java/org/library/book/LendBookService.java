@@ -4,20 +4,22 @@ import org.library.account.Account;
 import org.library.entity.BookItem;
 import org.library.fine.Fine;
 import org.library.notification.NotificationCallback;
-import org.library.notification.SMSNotification;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LendBookService implements LendBook<BookItem>{
     Map<Account, List<BookItem>> lendStatus;
     Map<Account, List<BookItem>> reserveStatus;
+    Map<BookItem, Timer> ExpireAlerts;
 
     public LendBookService() {
         this.lendStatus = new ConcurrentHashMap<>();
         this.reserveStatus = new ConcurrentHashMap<>();
+        this.ExpireAlerts = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -36,6 +38,27 @@ public class LendBookService implements LendBook<BookItem>{
         System.out.println("A book checked out already");
         return false;
     }
+
+    @Override
+    public boolean checkoutWithNotification(BookItem bookItem, Account account, NotificationCallback notification) {
+        if(checkout(bookItem, account)){
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    notification.triggerStatusChanged(bookItem);
+                }
+            };
+            LocalDateTime now = LocalDateTime.now();
+            now.plus(BookManagement.MAX_LEND_DAYS, ChronoUnit.DAYS);
+            timer.schedule(task, Timestamp.valueOf(now));
+
+            ExpireAlerts.put(bookItem, timer);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean reserve(BookItem bookItem, Account account, NotificationCallback callback) {
@@ -61,6 +84,7 @@ public class LendBookService implements LendBook<BookItem>{
                 }
             }
         }
+        cancelAlert(bookItem);
         return lendBooks.removeIf(bookItem::equals);
     }
 
@@ -71,7 +95,12 @@ public class LendBookService implements LendBook<BookItem>{
                 bookItem.forceCheckout();
             }
         }
+        cancelAlert(bookItem);
         return lendBooks.removeIf(bookItem::equals);
+    }
+
+    private void cancelAlert(BookItem bookItem){
+        ExpireAlerts.get(bookItem).cancel();
     }
 
     @Override

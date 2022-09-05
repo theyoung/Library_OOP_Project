@@ -28,9 +28,6 @@ public class BookItem {
         this.book = book;
     }
 
-//    public String getTitle(){
-//        return book.getTitle();
-//    }
     public void printTitle(){
         System.out.print(book.getTitle());
     }

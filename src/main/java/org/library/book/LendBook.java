@@ -7,6 +7,7 @@ import org.library.notification.NotificationCallback;
 
 public interface LendBook<T> {
     boolean checkout(T bookItem, Account account);
+    boolean checkoutWithNotification(T bookItem, Account account, NotificationCallback notification);
     boolean reserve(T bookItem, Account account, NotificationCallback callback);
     boolean returnBook(T bookItem, Account account);
     Fine issueFine(T bookItem, Account account);
