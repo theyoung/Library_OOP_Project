@@ -14,6 +14,7 @@ public class MailNotification implements NotificationCallback{
 
     @Override
     public void triggerStatusChanged(BookItem bookItem) {
-        System.out.println("Mail Send to = " + account.getName() + " with " + message + "/ The book is " + bookItem.getTitle());
+        System.out.println("Mail Send to = " + account.getName() + " with " + message + "/ The book is ");
+        bookItem.printTitle();
     }
 }

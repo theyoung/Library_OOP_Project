@@ -1,5 +1,8 @@
 package org.library.entity;
 
+import org.library.annotations.Entity;
+
+@Entity
 public class Author {
     String authorName;
     String authorDescription;
