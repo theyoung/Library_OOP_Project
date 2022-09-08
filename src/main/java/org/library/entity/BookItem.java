@@ -123,6 +123,7 @@ public class BookItem {
 
     //this method should be deleted
     //the purpose is testing only
+    @TestPurposeOnly
     public void setDueDate(Date date){
         this.dueDate = date;
     }
