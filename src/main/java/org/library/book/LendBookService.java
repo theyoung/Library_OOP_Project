@@ -15,12 +15,12 @@ public class LendBookService implements LendBook<BookItem>{
     private static final Integer PRE_EXPIRE_ALERT_DAYS = 1;
     Map<Account, List<BookItem>> lendStatus;
     Map<Account, List<BookItem>> reserveStatus;
-    Map<BookItem, Timer> ExpireAlerts;
+    Map<BookItem, Timer> expireAlerts;
 
     public LendBookService() {
         this.lendStatus = new ConcurrentHashMap<>();
         this.reserveStatus = new ConcurrentHashMap<>();
-        this.ExpireAlerts = new ConcurrentHashMap<>();
+        this.expireAlerts = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LendBookService implements LendBook<BookItem>{
             now.plus(BookManagement.MAX_LEND_DAYS - PRE_EXPIRE_ALERT_DAYS, ChronoUnit.DAYS);
             timer.schedule(task, Timestamp.valueOf(now));
 
-            ExpireAlerts.put(bookItem, timer);
+            expireAlerts.put(bookItem, timer);
             return true;
         }
         return false;
@@ -101,9 +101,9 @@ public class LendBookService implements LendBook<BookItem>{
     }
 
     private void cancelAlert(BookItem bookItem){
-        if (ExpireAlerts.get(bookItem) != null) {
-            ExpireAlerts.get(bookItem).cancel();
-            ExpireAlerts.remove(bookItem);
+        if (expireAlerts.get(bookItem) != null) {
+            expireAlerts.get(bookItem).cancel();
+            expireAlerts.remove(bookItem);
             System.out.println("Disabled Expire Alert for ");
             bookItem.printTitle();
         }

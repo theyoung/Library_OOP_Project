@@ -3,7 +3,7 @@ package org.library.notification;
 import org.library.account.Account;
 import org.library.entity.BookItem;
 
-public class SMSNotification implements NotificationCallback{
+public class SMSNotification implements NotificationCallback<BookItem>{
     Account account;
     String message;
 

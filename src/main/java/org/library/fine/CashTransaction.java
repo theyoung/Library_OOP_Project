@@ -17,6 +17,5 @@ public class CashTransaction implements Transaction{
             System.out.println("Lack of cash" + (amount - this.save));
             return false;
         }
-
     }
 }

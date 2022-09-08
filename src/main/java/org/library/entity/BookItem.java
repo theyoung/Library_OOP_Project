@@ -1,5 +1,6 @@
 package org.library.entity;
 
+import org.library.annotations.TestPurposeOnly;
 import org.library.book.BOOK_STATUS;
 import org.library.book.BookManagement;
 import org.library.annotations.Entity;
@@ -33,6 +34,7 @@ public class BookItem {
     }
 
     // to test purpose only
+    @TestPurposeOnly
     public BOOK_STATUS getStatus(){
         return status;
     }
