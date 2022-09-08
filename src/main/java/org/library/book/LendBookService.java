@@ -41,7 +41,7 @@ public class LendBookService implements LendBook<BookItem>{
     }
 
     @Override
-    public boolean checkoutWithNotification(BookItem bookItem, Account account, NotificationCallback notification) {
+    public boolean checkoutWithNotification(BookItem bookItem, Account account, NotificationCallback<BookItem> notification) {
         if(checkout(bookItem, account)){
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
@@ -62,7 +62,7 @@ public class LendBookService implements LendBook<BookItem>{
 
 
     @Override
-    public boolean reserve(BookItem bookItem, Account account, NotificationCallback callback) {
+    public boolean reserve(BookItem bookItem, Account account, NotificationCallback<BookItem> callback) {
         if (bookItem.reserve(callback)) {
             List<BookItem> reserveBooks = reserveStatus.getOrDefault(account, new LinkedList<>());
             reserveBooks.add(bookItem);
