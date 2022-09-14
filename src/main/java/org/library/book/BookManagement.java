@@ -2,6 +2,9 @@ package org.library.book;
 
 import org.library.account.AUTH_TYPE;
 import org.library.account.Account;
+import org.library.book.search.CategorySearchByAuthor;
+import org.library.book.search.CategorySearchBySubject;
+import org.library.book.search.CategorySearchByTitle;
 import org.library.entity.Author;
 import org.library.entity.Book;
 import org.library.entity.BookItem;
@@ -49,9 +52,9 @@ public class BookManagement{
 
         List<Book> result = new LinkedList<>();
 
-        if(title != null) result.addAll(category.searchBookByTitle(title));
-        if(author != null) result.addAll(category.searchBookByAuthor(author));
-        if(subject != null) result.addAll(category.searchBookBySubject(subject));
+        if(title != null) result.addAll(category.searchBookBy(new CategorySearchByTitle(title)));
+        if(author != null) result.addAll(category.searchBookBy(new CategorySearchByAuthor(author)));
+        if(subject != null) result.addAll(category.searchBookBy(new CategorySearchBySubject(subject)));
 
         return result.stream().distinct().collect(Collectors.toList());
     }
